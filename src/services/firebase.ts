@@ -57,7 +57,7 @@ export const DEMO_USER_PROFILE = {
   uid: 'demo-sheikh-farid-user',
   displayName: 'শেখ ফরিদ (ভিজিটর মোড)',
   email: 'farid.workspace@demo.bd',
-  photoURL: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&h=120&fit=crop&crop=faces',
+  photoURL: '/src/assets/images/architect_portrait_1791835932249.jpg',
   emailVerified: true
 };
 

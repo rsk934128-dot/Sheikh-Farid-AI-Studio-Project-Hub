@@ -145,7 +145,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <img
                     src={currentUser.photoURL}
                     alt={currentUser.displayName || 'User'}
-                    className="w-6 h-6 rounded-full border border-emerald-400"
+                    referrerPolicy="no-referrer"
+                    className="w-6 h-6 rounded-full border border-emerald-400 object-cover"
                   />
                 ) : (
                   <div className="w-6 h-6 rounded-full bg-emerald-600 text-white text-xs flex items-center justify-center font-bold">

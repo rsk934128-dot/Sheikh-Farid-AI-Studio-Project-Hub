@@ -119,9 +119,9 @@ ${leaveData.organization}।
   return (
     <div className="max-w-6xl mx-auto py-6 px-4 sm:px-6">
       
-      {/* Top Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-900 via-teal-950 to-slate-900 text-white p-6 sm:p-8 mb-8 shadow-xl border border-emerald-500/20">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+      {/* Top Banner with GovTech Visual Image */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-950 via-slate-900 to-teal-950 text-white p-6 sm:p-8 mb-8 shadow-xl border border-emerald-500/30">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 mb-3">
               <Shield className="w-3.5 h-3.5" />
@@ -130,16 +130,37 @@ ${leaveData.organization}।
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mb-2">
               সার্ভিস সরকার (CitizenDesk BD)
             </h1>
-            <p className="text-sm text-emerald-100/90 leading-relaxed">
+            <p className="text-sm text-emerald-100/90 leading-relaxed mb-4">
               নাগরিকদের দৈনন্দিন প্রশাসনিক কাজ সহজ করতে তাৎক্ষণিক অনলাইন জিডি ড্রাফট, সরকারি ছুটির আবেদন ও সকল জরুরি জাতীয় হটলাইনের একীভূত ডিজিটাল সেবা পোর্টাল।
             </p>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                <span className="text-xs font-bold text-emerald-300 bg-emerald-950/80 px-3 py-1 rounded-xl border border-emerald-500/30">
+                  অফলাইন-রেডি পিডব্লিউএ
+                </span>
+              </div>
+              <span className="text-xs font-mono text-slate-400">| ২৪/৭ জাতীয় নাগরিক সহায়তা</span>
+            </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-emerald-400 animate-ping"></span>
-            <span className="text-xs font-bold text-emerald-300 bg-emerald-950/80 px-3 py-1.5 rounded-xl border border-emerald-500/30">
-              অফলাইন-রেডি পিডব্লিউএ
-            </span>
+          {/* Visual Portal Illustration */}
+          <div className="relative shrink-0 w-full lg:w-72 sm:h-44 h-36 rounded-2xl overflow-hidden border border-emerald-500/40 shadow-2xl shadow-emerald-500/10 group">
+            <img
+              src="/src/assets/images/govtech_digital_portal_1791835943620.jpg"
+              alt="স্মার্ট গভর্ন্যান্স পোর্টাল ও সিটিজেন ই-সার্ভিস"
+              referrerPolicy="no-referrer"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent pointer-events-none"></div>
+            <div className="absolute bottom-2 left-2.5 right-2.5 flex items-center justify-between">
+              <span className="text-[10px] font-bold text-emerald-300 bg-slate-950/80 backdrop-blur-md px-2 py-0.5 rounded border border-emerald-500/30">
+                স্মার্ট গভর্নেন্স হাব
+              </span>
+              <span className="text-[10px] font-mono text-slate-300 bg-slate-950/80 px-1.5 py-0.5 rounded">
+                E-Gov BD
+              </span>
+            </div>
           </div>
         </div>
 
