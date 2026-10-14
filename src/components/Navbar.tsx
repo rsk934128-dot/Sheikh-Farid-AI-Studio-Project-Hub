@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, Bot, Shield, Mail, FolderGit2, User, Download, LogIn, LogOut, CheckCircle2, AlertCircle, UserCheck } from 'lucide-react';
+import { Sparkles, Bot, Shield, Mail, FolderGit2, User, Download, LogIn, LogOut, CheckCircle2, AlertCircle, UserCheck, Camera } from 'lucide-react';
 import { User as FirebaseUser } from 'firebase/auth';
 import { signInWithGoogleSafe, signOutSafe, signInAsDemoUser } from '../services/firebase';
 
@@ -11,6 +11,8 @@ interface NavbarProps {
   onSignOut?: () => void;
   installPrompt: any;
   onInstallClick: () => void;
+  onOpenProfileModal?: () => void;
+  customAvatarUrl?: string | null;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -20,7 +22,9 @@ export const Navbar: React.FC<NavbarProps> = ({
   onAuthSuccess,
   onSignOut,
   installPrompt,
-  onInstallClick
+  onInstallClick,
+  onOpenProfileModal,
+  customAvatarUrl
 }) => {
   const [authLoading, setAuthLoading] = React.useState(false);
   const [authNotice, setAuthNotice] = React.useState<{ text: string; showDemoBtn?: boolean } | null>(null);
@@ -138,24 +142,40 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
             )}
 
-            {/* Google Authentication */}
+            {/* Google Authentication & Profile Picture */}
             {currentUser ? (
-              <div className="flex items-center gap-2 bg-slate-800/80 pl-2 pr-1.5 py-1 rounded-full border border-slate-700">
-                {currentUser.photoURL ? (
-                  <img
-                    src={currentUser.photoURL}
-                    alt={currentUser.displayName || 'User'}
-                    referrerPolicy="no-referrer"
-                    className="w-6 h-6 rounded-full border border-emerald-400 object-cover"
-                  />
-                ) : (
-                  <div className="w-6 h-6 rounded-full bg-emerald-600 text-white text-xs flex items-center justify-center font-bold">
-                    {(currentUser.displayName || currentUser.email || 'U')[0].toUpperCase()}
-                  </div>
-                )}
-                <span className="text-xs font-medium text-slate-200 max-w-[90px] truncate hidden sm:inline">
+              <div className="flex items-center gap-2 bg-slate-800/80 pl-1.5 pr-1.5 py-1 rounded-full border border-slate-700">
+                <button
+                  onClick={onOpenProfileModal}
+                  className="relative group cursor-pointer focus:outline-none"
+                  title="ক্যামেরা বা ডিভাইস থেকে প্রোফাইল ছবি পরিবর্তন করুন"
+                >
+                  {customAvatarUrl || currentUser.photoURL ? (
+                    <img
+                      src={customAvatarUrl || currentUser.photoURL}
+                      alt={currentUser.displayName || 'User'}
+                      referrerPolicy="no-referrer"
+                      className="w-7 h-7 rounded-full border-2 border-emerald-400 object-cover group-hover:opacity-80 transition-opacity"
+                    />
+                  ) : (
+                    <div className="w-7 h-7 rounded-full bg-emerald-600 text-white text-xs flex items-center justify-center font-bold group-hover:bg-emerald-500 transition-colors">
+                      {(currentUser.displayName || currentUser.email || 'U')[0].toUpperCase()}
+                    </div>
+                  )}
+                  {/* Camera overlay indicator */}
+                  <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-slate-900 border border-emerald-400 rounded-full flex items-center justify-center text-[8px] text-emerald-400 group-hover:scale-110 transition-transform">
+                    <Camera className="w-2.5 h-2.5" />
+                  </span>
+                </button>
+
+                <button
+                  onClick={onOpenProfileModal}
+                  className="text-left text-xs font-medium text-slate-200 hover:text-emerald-300 max-w-[85px] truncate hidden sm:inline transition-colors"
+                  title="প্রোফাইল সেটিংস ও ছবি পরিবর্তন"
+                >
                   {currentUser.displayName || currentUser.email?.split('@')[0]}
-                </span>
+                </button>
+
                 <button
                   onClick={handleSignOut}
                   className="p-1 text-slate-400 hover:text-rose-400 transition-colors"
@@ -166,6 +186,25 @@ export const Navbar: React.FC<NavbarProps> = ({
               </div>
             ) : (
               <div className="flex items-center gap-1.5">
+                {/* Visitor Profile Photo button */}
+                <button
+                  onClick={onOpenProfileModal}
+                  className="relative group p-1 rounded-full bg-slate-800/80 hover:bg-slate-700 border border-slate-700 hover:border-emerald-500/50 transition-all flex items-center gap-1"
+                  title="প্রোফাইল ছবি পার্সোনালাইজ করুন (ক্যামেরা / ডিভাইস)"
+                >
+                  {customAvatarUrl ? (
+                    <img
+                      src={customAvatarUrl}
+                      alt="Custom Avatar"
+                      className="w-6 h-6 rounded-full object-cover border border-emerald-400"
+                    />
+                  ) : (
+                    <div className="w-6 h-6 rounded-full bg-slate-700 text-slate-300 flex items-center justify-center">
+                      <Camera className="w-3 h-3 text-emerald-400" />
+                    </div>
+                  )}
+                </button>
+
                 <button
                   onClick={handleSignIn}
                   disabled={authLoading}
@@ -175,6 +214,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <LogIn className="w-3.5 h-3.5 text-emerald-400" />
                   <span>{authLoading ? 'লগইন হচ্ছে...' : 'গুগল সাইন-ইন'}</span>
                 </button>
+
                 <button
                   onClick={handleDemoLogin}
                   className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20 transition-all"

@@ -6,12 +6,16 @@ import { GmailWorkspace } from './components/GmailWorkspace';
 import { ProjectsHub } from './components/ProjectsHub';
 import { AboutUs } from './components/AboutUs';
 import { PWAInstallBanner } from './components/PWAInstallBanner';
-import { onAuthChange } from './services/firebase';
+import { ProfileUploadModal } from './components/ProfileUploadModal';
+import { StudioProfileHeader } from './components/StudioProfileHeader';
+import { onAuthChange, getPersistedProfilePicture } from './services/firebase';
 import { User } from 'firebase/auth';
 
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('ai-lab');
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [customAvatarUrl, setCustomAvatarUrl] = useState<string | null>(() => getPersistedProfilePicture());
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState<boolean>(false);
   const [accessToken, setAccessToken] = useState<string>('');
   const [installPrompt, setInstallPrompt] = useState<any>(null);
   const [showInstallBanner, setShowInstallBanner] = useState<boolean>(false);
@@ -20,6 +24,12 @@ export const App: React.FC = () => {
   useEffect(() => {
     // Listen to Firebase Auth state
     const unsubscribe = onAuthChange((user) => {
+      if (user) {
+        const persisted = getPersistedProfilePicture(user.uid) || getPersistedProfilePicture();
+        if (persisted) {
+          setCustomAvatarUrl(persisted);
+        }
+      }
       setCurrentUser(user);
     });
 
@@ -70,6 +80,16 @@ export const App: React.FC = () => {
     setAccessToken('');
   };
 
+  const handlePhotoUpdated = (newPhotoURL: string) => {
+    setCustomAvatarUrl(newPhotoURL);
+    if (currentUser) {
+      setCurrentUser({
+        ...currentUser,
+        photoURL: newPhotoURL
+      } as any);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-white">
       {/* Navigation Bar */}
@@ -81,6 +101,8 @@ export const App: React.FC = () => {
         onSignOut={handleSignOut}
         installPrompt={installPrompt}
         onInstallClick={handleInstallClick}
+        onOpenProfileModal={() => setIsProfileModalOpen(true)}
+        customAvatarUrl={customAvatarUrl}
       />
 
       {/* PWA & Network Banner */}
@@ -93,12 +115,30 @@ export const App: React.FC = () => {
 
       {/* Main Content Area */}
       <main className="flex-1 pb-16">
+        {/* Personalized Studio Dashboard Header */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6">
+          <StudioProfileHeader
+            currentUser={currentUser}
+            currentPhotoURL={customAvatarUrl || currentUser?.photoURL}
+            onOpenUploadModal={() => setIsProfileModalOpen(true)}
+          />
+        </div>
+
         {activeTab === 'ai-lab' && <AiAssistantLab />}
         {activeTab === 'govtech' && <CitizenGovTech />}
         {activeTab === 'gmail' && <GmailWorkspace initialAccessToken={accessToken} />}
         {activeTab === 'projects' && <ProjectsHub />}
         {activeTab === 'about' && <AboutUs />}
       </main>
+
+      {/* Profile Picture Upload & Camera Modal with Firebase Storage */}
+      <ProfileUploadModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        currentUser={currentUser}
+        currentPhotoURL={customAvatarUrl || currentUser?.photoURL}
+        onPhotoUpdated={handlePhotoUpdated}
+      />
 
       {/* Footer */}
       <footer className="border-t border-slate-900 bg-slate-950/80 py-6 text-center text-xs text-slate-500">

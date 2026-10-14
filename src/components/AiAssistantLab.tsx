@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, Sparkles, Copy, Check, Trash2, Zap, Globe, Search, ExternalLink, ShieldCheck, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Send, Bot, User, Sparkles, Copy, Check, Trash2, Zap, Globe, Search, ExternalLink, ShieldCheck, CheckCircle2, AlertCircle, Camera, Cloud } from 'lucide-react';
 
 export interface GroundingChunk {
   web?: {
@@ -24,7 +24,17 @@ export interface Message {
   quotaNotice?: string;
 }
 
-export const AiAssistantLab: React.FC = () => {
+interface AiAssistantLabProps {
+  currentUser?: any;
+  onOpenProfileModal?: () => void;
+  customAvatarUrl?: string | null;
+}
+
+export const AiAssistantLab: React.FC<AiAssistantLabProps> = ({
+  currentUser,
+  onOpenProfileModal,
+  customAvatarUrl
+}) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 'welcome',
@@ -190,9 +200,67 @@ export const AiAssistantLab: React.FC = () => {
     }
   };
 
+  const avatarSrc =
+    customAvatarUrl ||
+    currentUser?.photoURL ||
+    '/src/assets/images/architect_portrait_1791835932249.jpg';
+  const userName =
+    currentUser?.displayName ||
+    currentUser?.email?.split('@')[0] ||
+    'স্টুডিও ভিজিটর';
+
   return (
     <div className="max-w-5xl mx-auto py-6 px-4 sm:px-6">
       
+      {/* Personalized Studio Header & Profile Banner */}
+      <div className="mb-6 p-4 sm:p-5 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-4 text-center sm:text-left">
+          <div className="relative group shrink-0">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl p-0.5 bg-gradient-to-tr from-emerald-500 via-teal-400 to-indigo-500 shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform">
+              <img
+                src={avatarSrc}
+                alt={userName}
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-cover rounded-[14px]"
+              />
+            </div>
+            <button
+              onClick={onOpenProfileModal}
+              className="absolute -bottom-1 -right-1 p-1.5 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-md transition-transform hover:scale-110 cursor-pointer"
+              title="ক্যামেরা বা ডিভাইস থেকে ছবি আপলোড করুন"
+            >
+              <Camera className="w-3.5 h-3.5 stroke-[2.5]" />
+            </button>
+          </div>
+          <div>
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-1">
+              <span className="text-xs font-black uppercase tracking-wider text-emerald-400 flex items-center gap-1">
+                <Sparkles className="w-3 h-3" />
+                <span>ব্যক্তিগতকৃত স্টুডিও ড্যাশবোর্ড</span>
+              </span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-slate-300 font-mono flex items-center gap-1">
+                <Cloud className="w-2.5 h-2.5 text-cyan-400" />
+                <span>Firebase Storage সিঙ্কড</span>
+              </span>
+            </div>
+            <h3 className="text-base sm:text-lg font-bold text-white">
+              স্বাগতম, {userName}!
+            </h3>
+            <p className="text-xs text-slate-400">
+              আপনার আপলোডকৃত প্রোফাইল ছবি সেশন জুড়ে সংরক্ষিত থাকবে ও এআই ল্যাবে ব্যবহৃত হবে।
+            </p>
+          </div>
+        </div>
+
+        <button
+          onClick={onOpenProfileModal}
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 hover:border-emerald-500/50 transition-all shadow-md group cursor-pointer shrink-0"
+        >
+          <Camera className="w-3.5 h-3.5 text-emerald-400 group-hover:scale-110 transition-transform" />
+          <span>ক্যামেরা / ছবি পরিবর্তন</span>
+        </button>
+      </div>
+
       {/* Top Banner with AI Grounding Visual */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-6 sm:p-8 mb-6 shadow-xl border border-slate-800">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
@@ -473,8 +541,13 @@ export const AiAssistantLab: React.FC = () => {
                 </div>
 
                 {isUser && (
-                  <div className="w-8 h-8 rounded-xl bg-slate-700 text-slate-200 flex items-center justify-center shrink-0">
-                    <User className="w-4 h-4" />
+                  <div className="w-8 h-8 rounded-xl overflow-hidden border border-emerald-400/80 shadow-md shrink-0 bg-slate-800">
+                    <img
+                      src={avatarSrc}
+                      alt="User Avatar"
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                 )}
               </div>
